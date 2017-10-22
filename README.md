@@ -1,6 +1,6 @@
 # vp-orm
 
-Object Relational Mapping for JavaScript and Node.js.
+Object Relational Mapping (ORM) for JavaScript and Node.js
 
 ## Installation
 
