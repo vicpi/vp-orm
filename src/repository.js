@@ -8,7 +8,6 @@ export type TPromise = Promise<any>;
 
 export type TUuid = string;
 export type TConnection = any
-
 type TCriteria = any
 
 class Repository {
@@ -20,15 +19,15 @@ class Repository {
         this.model = model
     }
 
-    generateQuery(criteria : TCriteria = null) {
+    generateQuery(model, criteria : TCriteria = null, foreignKey = null) {
         const parts = []
-        parts.push(`select * from ${this.model.table}`)
-        const foreignKeys = this.model.getForeignKeys()
-        if (foreignKeys.length > 0) {
-            for (let oneForeignKey of foreignKeys) {
-                parts.push(`LEFT JOIN ${oneForeignKey.foreignModel.table}
-                    on ${this.model.table}.${this.model.id}=${oneForeignKey.foreignModel.table}.${oneForeignKey.foreignKey}`)
-            }
+        const selectFields = foreignKey === null
+            ? '*'
+            : `${foreignKey.foreignModel.table}.*`
+        parts.push(`select ${selectFields} from ${model.table}`)
+        if (foreignKey !== null) {
+            parts.push(`LEFT JOIN ${foreignKey.foreignModel.table}
+                    on ${model.table}.${model.id}=${foreignKey.foreignModel.table}.${foreignKey.foreignKey}`)
         }
         if (criteria !== null) {
             parts.push(criteria)
@@ -36,7 +35,7 @@ class Repository {
         return parts.join(' ')
     }
 
-    queryDatabase(query : string) {
+    queryDatabase(query : string, model: any) {
         return new Promise((resolve, reject) => {
             console.log('---------------------- SELECT ------------------')
             console.log(query)
@@ -47,21 +46,41 @@ class Repository {
                 }
                 const models = []
                 for (let item of results) {
-                    models.push(new this.model(item))
+                    models.push(new model(item))
                 }
                 resolve(models)
             });
         })
     }
 
-    findAll(): TPromise {
-        const query = this.generateQuery()
-        return this.queryDatabase(query)
+    async findAll(): TPromise {
+        const query = this.generateQuery(this.model)
+        const models = await this.queryDatabase(query, this.model)
+        const foreignKeys = this.model.getForeignKeys()
+        if (foreignKeys.length > 0) {
+            const foreignKey = foreignKeys[0]
+            const foreignQuery = this.generateQuery(this.model, null, foreignKey)
+            const foreignModels = await this.queryDatabase(foreignQuery, foreignKey.foreignModel)
+            foreignModels.forEach(foreignModel => {
+                // console.log('foreignKey ', foreignModel, foreignModel[foreignKey.foreignModelKey]);
+                const correspondingModel = models.find(
+                    model => model.id === foreignModel[foreignKey.foreignModelKey]
+                )
+                // console.log('correspondingModel ', correspondingModel);
+                if (correspondingModel.books === undefined) {
+                    correspondingModel.books = []
+                }
+                correspondingModel.books.push(foreignModel)
+            })
+            // console.log(models);
+            // console.log(foreignModels);
+        }
+        return models
     }
 
     find(criteria : TCriteria): TPromise {
-        const query = this.generateQuery(criteria)
-        return this.queryDatabase(query)
+        const query = this.generateQuery(this.model, criteria)
+        return this.queryDatabase(query, this.model)
     }
 }
 
