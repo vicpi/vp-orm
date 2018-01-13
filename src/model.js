@@ -1,9 +1,9 @@
 class Model {
-    constructor(item: any) {
+    constructor(databaseRow: any) {
         const fields = this.getFields()
         fields.forEach(modelField => {
             const databaseField = this.constructor[modelField]
-            this[modelField] = item[databaseField]
+            this[modelField] = databaseRow[databaseField]
         })
     }
 
@@ -21,9 +21,17 @@ class Model {
 
     getFields() {
         const reservedProperties = this.getReservedProperties()
+        // console.log('keys ', Object.keys(this.constructor), Object.values(this.constructor));
         const fields = Object.keys(this.constructor)
             .filter(item => !reservedProperties.includes(item))
+            .filter(item => !this.constructor.getForeignKeys().includes(item))
         return fields
+    }
+
+    static getForeignKeys() {
+        return Object.keys(this)
+            .filter(key => typeof this[key] === 'object')
+            .map(key => this[key])
     }
 }
 

@@ -12,7 +12,10 @@ export type TConnection = any
 type TCriteria = any
 
 class Repository {
-    connection: TConnection model: any constructor(connection : TConnection, model : any) {
+    connection: TConnection;
+    model: any;
+
+    constructor(connection : TConnection, model : any) {
         this.connection = connection
         this.model = model
     }
@@ -20,6 +23,13 @@ class Repository {
     generateQuery(criteria : TCriteria = null) {
         const parts = []
         parts.push(`select * from ${this.model.table}`)
+        const foreignKeys = this.model.getForeignKeys()
+        if (foreignKeys.length > 0) {
+            for (let oneForeignKey of foreignKeys) {
+                parts.push(`LEFT JOIN ${oneForeignKey.foreignModel.table}
+                    on ${this.model.table}.${this.model.id}=${oneForeignKey.foreignModel.table}.${oneForeignKey.foreignKey}`)
+            }
+        }
         if (criteria !== null) {
             parts.push(criteria)
         }
