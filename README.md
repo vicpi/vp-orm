@@ -174,8 +174,27 @@ By the way, as you can see, we can name our model fields in a different manner
 than the database fields. In this way, we can use camelCase for our
 JavaScript codebase while using snake_case when it comes to naming columns in a database.
 
-Now, when we have created our models, we can actually perform some queries
-against a database.
+#### Configuring database connection
+
+Before making any requests to our database, we need to configure VpOrm
+to use the right database connection.
+
+```js
+import {VpOrm} from 'vp-orm'
+
+VpOrm.configure({
+    host: config.DATABASE_HOST,
+    user: config.DATABASE_USER,
+    password: config.DATABASE_PASSWORD,
+    database: config.DATABASE_NAME
+})
+```
+This should be called only once in your project.
+Now, when you require VpOrm in any other file of the project, it will remember the connection
+and use it every time you make a request to the database.
+
+Now, when we configured database connection, we can actually perform some queries
+against our database.
 
 #### Performing SELECT statements
 
