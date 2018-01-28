@@ -21,6 +21,20 @@ class Model {
                 const query = repository.generateQuery(foreignKey.foreignModel, criteria)
                 return repository.queryDatabase(query, foreignKey.foreignModel)
             }
+
+            const addOneMethodName = `add${foreignKeyName.capitalize()}`
+            this[addOneMethodName] = (foreignModelInstance) => {
+                const dataMapper = ORM.createDataMapper()
+                console.log(foreignModelInstance.toObject())
+                return dataMapper.insert(foreignModelInstance.constructor, foreignModelInstance)
+            }
+
+            const removeOneMethodName = `remove${foreignKeyName.capitalize()}`
+            this[removeOneMethodName] = (foreignModelInstance) => {
+                const dataMapper = ORM.createDataMapper()
+                const deleteCriteria = new Criteria().where(expr(foreignModelInstance.constructor.id, '=', foreignModelInstance.id))
+                return dataMapper.delete(foreignModelInstance.constructor, deleteCriteria)
+            }
         })
     }
 
