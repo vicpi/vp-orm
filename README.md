@@ -16,6 +16,10 @@ npm install --save vp-orm
 yarn add vp-orm
 ```
 
+## Demo
+
+Simple demo project using vp-orm: https://github.com/vicpi/vp-orm-demo.
+
 ## Usage
 
 #### Database structure
@@ -255,7 +259,7 @@ const booksByAuthor = await bookRepository.find(bookCriteria)
 
 This will result in the following SQL query:
 ```sql
-select * from book WHERE (author_id = 3) ORDER BY title ASC, year ASC LIMIT 4 OFFSET 3
+select * from book WHERE (author_id = 3) ORDER BY title ASC, year ASC LIMIT 2 OFFSET 1
 ```
 
 #### Creating custom methods on the model
@@ -284,6 +288,7 @@ export default AuthorModel
 Now, let's get a list of all authors and output their full names to the console.
 ```js
 import {VpOrm} from 'vp-orm'
+import AuthorModel from './models/author-model'
 
 const authorRepository = VpOrm.createRepository(AuthorModel)
 const authors = await authorRepository.findAll()
