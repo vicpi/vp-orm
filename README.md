@@ -223,7 +223,7 @@ select * from author ORDER BY birth_date DESC LIMIT 2
 
 Let's get a list of authors who were born after 1900.
 ```js
-import {VpOrm, Criteria, Order, expr, quote} from 'vp-orm'
+import {VpOrm, Criteria, expr, quote} from 'vp-orm'
 import AuthorModel from './models/author-model'
 
 const authorRepository = VpOrm.createRepository(AuthorModel)
