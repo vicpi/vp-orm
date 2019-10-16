@@ -140,7 +140,7 @@ First we will create AuthorModel. We can put it into a `models` directory under 
 Here is how it looks.
 
 ```js
-import {Model} from 'vp-orm'
+import { Model } from 'vp-orm'
 
 class AuthorModel extends Model {
     static table = 'author'
@@ -158,7 +158,7 @@ Next, we are going to create BookModel.
 Similarly, we will put it into `models/book-model.js`.
 
 ```js
-import {Model} from 'vp-orm'
+import { Model } from 'vp-orm'
 
 class BookModel extends Model {
     static table = 'book'
@@ -184,7 +184,7 @@ Before making any requests to our database, we need to configure VpOrm
 to use the right database connection.
 
 ```js
-import {VpOrm} from 'vp-orm'
+import { VpOrm } from 'vp-orm'
 
 VpOrm.configure({
     host: config.DATABASE_HOST,
@@ -206,7 +206,7 @@ Now we want to get only 2 latest authors ordered by their birth date descending.
 For this we would need to use `find` method with specific criteria.
 
 ```js
-import {VpOrm, Criteria, Order} from 'vp-orm'
+import { VpOrm, Criteria, Order } from 'vp-orm'
 import AuthorModel from './models/author-model'
 
 const authorRepository = VpOrm.createRepository(AuthorModel)
@@ -223,7 +223,7 @@ select * from author ORDER BY birth_date DESC LIMIT 2
 
 Let's get a list of authors who were born after 1900.
 ```js
-import {VpOrm, Criteria, expr, quote} from 'vp-orm'
+import { VpOrm, Criteria, expr, quote } from 'vp-orm'
 import AuthorModel from './models/author-model'
 
 const authorRepository = VpOrm.createRepository(AuthorModel)
@@ -242,7 +242,7 @@ select * from author WHERE (birth_date > "1900")
 Now let's get 2 books by a specific author, sorted by title and year,
 with an offset of 1.
 ```js
-import {VpOrm, Criteria, expr} from 'vp-orm'
+import { VpOrm, Criteria, expr } from 'vp-orm'
 import BookModel from './models/book-model'
 
 const bookRepository = VpOrm.createRepository(BookModel)
@@ -267,7 +267,7 @@ select * from book WHERE (author_id = 3) ORDER BY title ASC, year ASC LIMIT 2 OF
 We can create custom methods on the model classes.
 To show an example, let's create `getFullName` method in author model.
 ```js
-import {Model} from '../../orm'
+import { Model } from '../../orm'
 
 class AuthorModel extends Model {
     static table = 'author'
@@ -287,7 +287,7 @@ export default AuthorModel
 
 Now, let's get a list of all authors and output their full names to the console.
 ```js
-import {VpOrm} from 'vp-orm'
+import { VpOrm } from 'vp-orm'
 import AuthorModel from './models/author-model'
 
 const authorRepository = VpOrm.createRepository(AuthorModel)
@@ -307,7 +307,7 @@ Paulo Coelho
 Let's create a new book now and add it to the list of of existing books.
 
 ```js
-import {VpOrm} from 'vp-orm'
+import { VpOrm } from 'vp-orm'
 import BookModel from './models/book-model'
 
 const dataMapper = VpOrm.createDataMapper()
@@ -330,7 +330,7 @@ Now we suddenly recalled that the book that we have added, 'Manual of the Warrio
 was published in 1997, and not in 1998. So, we need to update this record in our database.
 
 ```js
-import {VpOrm, Criteria, expr} from 'vp-orm'
+import { VpOrm, Criteria, expr } from 'vp-orm'
 import BookModel from './models/book-model'
 
 const dataMapper = VpOrm.createDataMapper()
@@ -356,7 +356,7 @@ But we want to have only 1 book with that title in our database, not 3 of them.
 Other two need to be deleted.
 
 ```js
-import {VpOrm, Order, Criteria, expr, quote} from 'vp-orm'
+import { VpOrm, Order, Criteria, expr, quote } from 'vp-orm'
 
 const dataMapper = VpOrm.createDataMapper()
 const deleteCriteria = new Criteria()
